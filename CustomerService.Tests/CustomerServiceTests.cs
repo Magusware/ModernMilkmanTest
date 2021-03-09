@@ -1,4 +1,4 @@
-﻿namespace CustomerService.Tests
+﻿namespace CustomerServiceNS.Tests
 {
     using System;
     using System.Collections.Generic;

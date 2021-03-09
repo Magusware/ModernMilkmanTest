@@ -1,4 +1,4 @@
-﻿namespace CustomerService.Database
+﻿namespace CustomerServiceNS.Database
 {
     using System;
     using System.Collections.Generic;

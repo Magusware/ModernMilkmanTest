@@ -1,10 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Threading;
-using System.Threading.Tasks;
-
-namespace CustomerService.Interfaces
+﻿namespace CustomerServiceNS.Interfaces
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Threading;
+    using System.Threading.Tasks;
     public interface ICustomerService
     {
         Task<bool> AddCustomerAsync(Customer customer, CancellationToken cancellationToken);

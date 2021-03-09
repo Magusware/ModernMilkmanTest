@@ -1,4 +1,4 @@
-﻿namespace CustomerService.Interfaces
+﻿namespace CustomerServiceNS.Interfaces
 {
     using System;
 

@@ -1,4 +1,4 @@
-﻿namespace CustomerService.Database
+﻿namespace CustomerServiceNS.Database
 {
     using System;
     using System.ComponentModel.DataAnnotations;
@@ -24,6 +24,6 @@
 
         public string Country { get; set; }
 
-        public bool PrimaryAddress { get; set; }
+        public bool IsPrimary { get; set; }
     }
 }

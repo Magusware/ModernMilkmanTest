@@ -1,6 +1,7 @@
-﻿namespace CustomerService.Database
+﻿namespace CustomerServiceNS.Database
 {
     using AutoMapper;
+    using System;
     using System.Linq;
 
     public class CustomerServiceDatabaseMapper : ICustomerServiceDatabaseMapper
@@ -20,14 +21,16 @@
                     .ReverseMap();
 
                 config.CreateMap<Interfaces.Customer, Customer>()
-                    .ForMember(x => x.Addresses, opts => opts.MapFrom(x => x.SecondaryAddresses.Prepend(x.PrimaryAddress).ToList()))
+                    .ForMember(
+                        x => x.Addresses, 
+                        opts => opts.MapFrom(x => (x.SecondaryAddresses ?? Array.Empty<Interfaces.Address>()).Prepend(x.PrimaryAddress).ToArray()))
                     .AfterMap((customer, dbCustomer) =>
                     {
-                        dbCustomer.Addresses.First(x => x.AddressId == customer.PrimaryAddress.AddressId).PrimaryAddress = true;
+                        dbCustomer.Addresses.First(x => x.AddressId == customer.PrimaryAddress.AddressId).IsPrimary = true;
                     })
                     .ReverseMap()
-                    .ForMember(x => x.PrimaryAddress, opts => opts.MapFrom(x => x.Addresses.First(y => y.PrimaryAddress)))
-                    .ForMember(x => x.SecondaryAddresses, opts => opts.MapFrom(x => x.Addresses.Where(y => !y.PrimaryAddress)));
+                    .ForMember(x => x.PrimaryAddress, opts => opts.MapFrom(x => x.Addresses.First(y => y.IsPrimary)))
+                    .ForMember(x => x.SecondaryAddresses, opts => opts.MapFrom(x => x.Addresses.Where(y => !y.IsPrimary)));
             });
 
             return configuration.CreateMapper();
