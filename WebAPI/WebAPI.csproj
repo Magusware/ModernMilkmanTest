@@ -5,7 +5,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Autofac" Version="6.1.0" />
+    <PackageReference Include="Autofac.Extensions.DependencyInjection" Version="7.1.0" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\CustomerService.Interfaces\CustomerService.Interfaces.csproj" />
+    <ProjectReference Include="..\CustomerService\CustomerService.csproj" />
   </ItemGroup>
 
 

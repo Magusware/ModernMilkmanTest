@@ -9,7 +9,17 @@
     [Route("[controller]")]
     public class CustomerController : ControllerBase
     {
+        private readonly ICustomerService customerService;
+
         public string DefaultCountry { get; set; } = "UK";
+
+        public CustomerController(ICustomerService customerService)
+        {
+            // In a real implementation, this would not be the service
+            // but instead would be the bridge to the service. Either a 
+            // proxy or something similar.
+            this.customerService = customerService ?? throw new ArgumentNullException(nameof(customerService));
+        }
 
         /// <summary>
         /// Gets a specific customer
