@@ -3,13 +3,13 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.30621.155
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ModernMilkmanAPI", "ModernMilkmanAPI\ModernMilkmanAPI.csproj", "{2700DCE9-E7DA-4C94-90F3-60D1D4A18B6E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CustomerService", "CustomerService\CustomerService.csproj", "{980F147F-7464-4083-89D4-E76DA9E1D5F5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CustomerService", "CustomerService\CustomerService.csproj", "{980F147F-7464-4083-89D4-E76DA9E1D5F5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CustomerService.Interfaces", "CustomerService.Interfaces\CustomerService.Interfaces.csproj", "{99C8500D-C079-4FA6-84C9-1A023D65DC52}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CustomerService.Interfaces", "CustomerService.Interfaces\CustomerService.Interfaces.csproj", "{99C8500D-C079-4FA6-84C9-1A023D65DC52}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CustomerService.Tests", "CustomerService.Tests\CustomerService.Tests.csproj", "{E66C6AEE-E58E-4A56-A088-2FF769DB7E55}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CustomerService.Tests", "CustomerService.Tests\CustomerService.Tests.csproj", "{E66C6AEE-E58E-4A56-A088-2FF769DB7E55}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebAPI", "WebAPI\WebAPI.csproj", "{08FACBF8-A449-401E-9DF7-CA3CA9A9C95A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -17,10 +17,6 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{2700DCE9-E7DA-4C94-90F3-60D1D4A18B6E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{2700DCE9-E7DA-4C94-90F3-60D1D4A18B6E}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{2700DCE9-E7DA-4C94-90F3-60D1D4A18B6E}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{2700DCE9-E7DA-4C94-90F3-60D1D4A18B6E}.Release|Any CPU.Build.0 = Release|Any CPU
 		{980F147F-7464-4083-89D4-E76DA9E1D5F5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{980F147F-7464-4083-89D4-E76DA9E1D5F5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{980F147F-7464-4083-89D4-E76DA9E1D5F5}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -33,6 +29,10 @@ Global
 		{E66C6AEE-E58E-4A56-A088-2FF769DB7E55}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E66C6AEE-E58E-4A56-A088-2FF769DB7E55}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E66C6AEE-E58E-4A56-A088-2FF769DB7E55}.Release|Any CPU.Build.0 = Release|Any CPU
+		{08FACBF8-A449-401E-9DF7-CA3CA9A9C95A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{08FACBF8-A449-401E-9DF7-CA3CA9A9C95A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{08FACBF8-A449-401E-9DF7-CA3CA9A9C95A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{08FACBF8-A449-401E-9DF7-CA3CA9A9C95A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
