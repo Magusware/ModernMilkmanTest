@@ -1,7 +1,7 @@
-﻿using System;
-
-namespace ModernMilkmanAPI
+﻿namespace ModernMilkmanAPI
 {
+    using System;
+
     class Program
     {
         static void Main(string[] args)

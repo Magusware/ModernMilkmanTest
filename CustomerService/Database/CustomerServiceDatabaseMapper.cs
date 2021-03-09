@@ -1,8 +1,8 @@
 ﻿namespace CustomerServiceNS.Database
 {
-    using AutoMapper;
     using System;
     using System.Linq;
+    using AutoMapper;
 
     public class CustomerServiceDatabaseMapper : ICustomerServiceDatabaseMapper
     {

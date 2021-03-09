@@ -1,10 +1,10 @@
 ﻿namespace CustomerServiceNS.Tests.DatabaseTests
 {
+    using System;
+    using System.Linq;
     using CustomerServiceNS.Database;
     using FluentAssertions;
     using FluentAssertions.Execution;
-    using System;
-    using System.Linq;
     using Xunit;
 
     public class CustomerServiceDatabaseMapperTests

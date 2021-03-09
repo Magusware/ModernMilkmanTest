@@ -1,10 +1,10 @@
 ﻿namespace CustomerServiceNS.Tests
 {
+    using System;
+    using System.Linq;
     using AutoFixture;
     using AutoFixture.AutoMoq;
     using AutoFixture.Xunit2;
-    using System;
-    using System.Linq;
 
     [AttributeUsage(AttributeTargets.Method, AllowMultiple = false)]
     public class AutoDomainDataAttribute : AutoDataAttribute
