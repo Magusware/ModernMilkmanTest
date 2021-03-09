@@ -9,6 +9,8 @@
     {
         public Guid AddressId { get; set; }
 
+        public Guid CustomerId { get; set; }
+
         [Required]
         public string AddressLine1 { get; set; }
 

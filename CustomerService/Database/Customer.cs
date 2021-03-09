@@ -26,5 +26,7 @@
         public string MobileNumber { get; set; }
 
         public virtual IEnumerable<Address> Addresses { get; set; } = new HashSet<Address>();
+
+        public bool IsActive { get; set; }
     }
 }

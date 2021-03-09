@@ -18,7 +18,7 @@
                 CustomerServiceDatabaseMapper sut)
             {
                 var result = sut.Map<Database.Address>(address);
-                result.Should().BeEquivalentTo(address);
+                result.Should().BeEquivalentTo(address, opts => opts.ExcludingMissingMembers());
             }
 
             [Theory]
@@ -47,12 +47,12 @@
                     result.Should().BeEquivalentTo(customer, opts => opts.ExcludingMissingMembers());
                     foreach (var address in customer.SecondaryAddresses)
                     {
-                        result.Addresses.Should().ContainEquivalentOf(address);
+                        result.Addresses.Should().ContainEquivalentOf(address, opts => opts.ExcludingMissingMembers());
                     }
 
                     var primaryDbAddress = result.Addresses.Where(x => x.IsPrimary);
                     primaryDbAddress.Should().HaveCount(1);
-                    primaryDbAddress.First().Should().BeEquivalentTo(customer.PrimaryAddress);
+                    primaryDbAddress.First().Should().BeEquivalentTo(customer.PrimaryAddress, opts => opts.ExcludingMissingMembers());
                 }
             }
 
@@ -70,7 +70,7 @@
                 {
                     result.Should().BeEquivalentTo(customer, opts => opts.ExcludingMissingMembers());
                     result.Addresses.Should().HaveCount(1);
-                    result.Addresses.First().Should().BeEquivalentTo(customer.PrimaryAddress);
+                    result.Addresses.First().Should().BeEquivalentTo(customer.PrimaryAddress, opts => opts.ExcludingMissingMembers());
                     result.Addresses.First().IsPrimary.Should().BeTrue();
                 }
             }
@@ -89,7 +89,7 @@
                 {
                     result.Should().BeEquivalentTo(customer, opts => opts.ExcludingMissingMembers());
                     result.Addresses.Should().HaveCount(1);
-                    result.Addresses.First().Should().BeEquivalentTo(customer.PrimaryAddress);
+                    result.Addresses.First().Should().BeEquivalentTo(customer.PrimaryAddress, opts => opts.ExcludingMissingMembers());
                     result.Addresses.First().IsPrimary.Should().BeTrue();
                 }
             }
