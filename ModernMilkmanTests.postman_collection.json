@@ -1,0 +1,440 @@
+{
+	"info": {
+		"_postman_id": "0c3d4412-97e6-4e9a-b90d-d1298c2de6f2",
+		"name": "ModernMilkmanTests",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Get customer",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true,
+				"disabledSystemHeaders": {}
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "text/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n   \"title\":\"Mr.\",\r\n   \"forename\":\"Chris\",\r\n   \"surname\":\"Armitt\",\r\n   \"emailAddress\":\"magusware.unlimited@gmail.com\",\r\n   \"mobileNumber\":\"07474825099\",\r\n   \"primaryAddress\":{\r\n       \"addressLine1\":\"21 Coverdale Drive\",\r\n       \"town\":\"Blackburn\",\r\n       \"postcode\":\"BB2 5ED\"\r\n   }\r\n}"
+				},
+				"url": {
+					"raw": "https://localhost:44389/customer/?customerId={{customerId}}",
+					"protocol": "https",
+					"host": [
+						"localhost"
+					],
+					"port": "44389",
+					"path": [
+						"customer",
+						""
+					],
+					"query": [
+						{
+							"key": "customerId",
+							"value": "{{customerId}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get all customers",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true,
+				"disabledSystemHeaders": {}
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "text/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n   \"title\":\"Mr.\",\r\n   \"forename\":\"Chris\",\r\n   \"surname\":\"Armitt\",\r\n   \"emailAddress\":\"magusware.unlimited@gmail.com\",\r\n   \"mobileNumber\":\"07474825099\",\r\n   \"primaryAddress\":{\r\n       \"addressLine1\":\"21 Coverdale Drive\",\r\n       \"town\":\"Blackburn\",\r\n       \"postcode\":\"BB2 5ED\"\r\n   }\r\n}"
+				},
+				"url": {
+					"raw": "https://localhost:44389/customer/all",
+					"protocol": "https",
+					"host": [
+						"localhost"
+					],
+					"port": "44389",
+					"path": [
+						"customer",
+						"all"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get active customers",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true,
+				"disabledSystemHeaders": {}
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "text/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n   \"title\":\"Mr.\",\r\n   \"forename\":\"Chris\",\r\n   \"surname\":\"Armitt\",\r\n   \"emailAddress\":\"magusware.unlimited@gmail.com\",\r\n   \"mobileNumber\":\"07474825099\",\r\n   \"primaryAddress\":{\r\n       \"addressLine1\":\"21 Coverdale Drive\",\r\n       \"town\":\"Blackburn\",\r\n       \"postcode\":\"BB2 5ED\"\r\n   }\r\n}"
+				},
+				"url": {
+					"raw": "https://localhost:44389/customer/active",
+					"protocol": "https",
+					"host": [
+						"localhost"
+					],
+					"port": "44389",
+					"path": [
+						"customer",
+						"active"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Add customer 1",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var jsonData = JSON.parse(responseBody);\r",
+							"pm.globals.set(\"customer1\", jsonData.customerId);\r",
+							"pm.globals.set(\"customer1address1\", jsonData.primaryAddress.addressId);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {}
+			},
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "text/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n   \"title\":\"Mr.\",\r\n   \"forename\":\"Gordon\",\r\n   \"surname\":\"Freeman\",\r\n   \"emailAddress\":\"gordon.freeman@blackmesa.com\",\r\n   \"mobileNumber\":\"07474825099\",\r\n   \"primaryAddress\":{\r\n       \"addressLine1\":\"66 Valve Street\",\r\n       \"town\":\"Valveland\",\r\n       \"postcode\":\"HL3 W3N\"\r\n   },\r\n   \"isActive\":true\r\n}"
+				},
+				"url": {
+					"raw": "https://localhost:44389/customer/",
+					"protocol": "https",
+					"host": [
+						"localhost"
+					],
+					"port": "44389",
+					"path": [
+						"customer",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Add customer 2",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var jsonData = JSON.parse(responseBody);\r",
+							"pm.globals.set(\"customer2\", jsonData.customerId);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {}
+			},
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "text/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n   \"title\":\"Mr.\",\r\n   \"forename\":\"Chris\",\r\n   \"surname\":\"Armitt\",\r\n   \"emailAddress\":\"my@email.com\",\r\n   \"mobileNumber\":\"07474825099\",\r\n   \"primaryAddress\":{\r\n       \"addressLine1\":\"21 Coverdale Drive\",\r\n       \"town\":\"Blackburn\",\r\n       \"postcode\":\"BB2 5ED\"\r\n   },\r\n   \"isActive\":true\r\n}"
+				},
+				"url": {
+					"raw": "https://localhost:44389/customer/",
+					"protocol": "https",
+					"host": [
+						"localhost"
+					],
+					"port": "44389",
+					"path": [
+						"customer",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Add address 2 to customer 1",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var jsonData = JSON.parse(responseBody);\r",
+							"pm.globals.set(\"customer1address2\", jsonData.secondaryAddresses[0].addressId);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {}
+			},
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "text/json",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "https://localhost:44389/customer/address?customerId={{customer1}}&addressLine1=93 Radcliffe Road&town=Bolton&postcode=BL2 5DY",
+					"protocol": "https",
+					"host": [
+						"localhost"
+					],
+					"port": "44389",
+					"path": [
+						"customer",
+						"address"
+					],
+					"query": [
+						{
+							"key": "customerId",
+							"value": "{{customer1}}"
+						},
+						{
+							"key": "addressLine1",
+							"value": "93 Radcliffe Road"
+						},
+						{
+							"key": "town",
+							"value": "Bolton"
+						},
+						{
+							"key": "postcode",
+							"value": "BL2 5DY"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Change primary address of customer 1",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "https://localhost:44389/customer/primary?customerId={{customer1}}&addressId={{customer1address2}}",
+					"protocol": "https",
+					"host": [
+						"localhost"
+					],
+					"port": "44389",
+					"path": [
+						"customer",
+						"primary"
+					],
+					"query": [
+						{
+							"key": "customerId",
+							"value": "{{customer1}}"
+						},
+						{
+							"key": "addressId",
+							"value": "{{customer1address2}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Make customer 1 inactive",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "https://localhost:44389/customer/active?customerId={{customer1}}&active=false",
+					"protocol": "https",
+					"host": [
+						"localhost"
+					],
+					"port": "44389",
+					"path": [
+						"customer",
+						"active"
+					],
+					"query": [
+						{
+							"key": "customerId",
+							"value": "{{customer1}}"
+						},
+						{
+							"key": "active",
+							"value": "false"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Make customer 1 active",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "https://localhost:44389/customer/active?customerId={{customer1}}&active=true",
+					"protocol": "https",
+					"host": [
+						"localhost"
+					],
+					"port": "44389",
+					"path": [
+						"customer",
+						"active"
+					],
+					"query": [
+						{
+							"key": "customerId",
+							"value": "{{customer1}}"
+						},
+						{
+							"key": "active",
+							"value": "true"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete address 1 on customer 1",
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {}
+			},
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "https://localhost:44389/customer/address?customerId={{customer1}}&addressId={{customer1address1}}",
+					"protocol": "https",
+					"host": [
+						"localhost"
+					],
+					"port": "44389",
+					"path": [
+						"customer",
+						"address"
+					],
+					"query": [
+						{
+							"key": "customerId",
+							"value": "{{customer1}}"
+						},
+						{
+							"key": "addressId",
+							"value": "{{customer1address1}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete customer 1",
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {}
+			},
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "text/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n   \"title\":\"Mr.\",\r\n   \"forename\":\"Chris\",\r\n   \"surname\":\"Armitt\",\r\n   \"emailAddress\":\"magusware.unlimited@gmail.com\",\r\n   \"mobileNumber\":\"07474825099\",\r\n   \"primaryAddress\":{\r\n       \"addressLine1\":\"21 Coverdale Drive\",\r\n       \"town\":\"Blackburn\",\r\n       \"postcode\":\"BB2 5ED\"\r\n   }\r\n}"
+				},
+				"url": {
+					"raw": "https://localhost:44389/customer?customerId={{customer1}}",
+					"protocol": "https",
+					"host": [
+						"localhost"
+					],
+					"port": "44389",
+					"path": [
+						"customer"
+					],
+					"query": [
+						{
+							"key": "customerId",
+							"value": "{{customer1}}"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
