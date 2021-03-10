@@ -22,11 +22,15 @@
 
                 config.CreateMap<Interfaces.Customer, Customer>()
                     .ForMember(
-                        x => x.Addresses, 
+                        x => x.Addresses,
                         opts => opts.MapFrom(x => (x.SecondaryAddresses ?? Array.Empty<Interfaces.Address>()).Prepend(x.PrimaryAddress).ToArray()))
                     .AfterMap((customer, dbCustomer) =>
                     {
                         dbCustomer.Addresses.First(x => x.AddressId == customer.PrimaryAddress.AddressId).IsPrimary = true;
+                        foreach (var address in dbCustomer.Addresses)
+                        {
+                            address.CustomerId = dbCustomer.CustomerId;
+                        }
                     })
                     .ReverseMap()
                     .ForMember(x => x.PrimaryAddress, opts => opts.MapFrom(x => x.Addresses.First(y => y.IsPrimary)))

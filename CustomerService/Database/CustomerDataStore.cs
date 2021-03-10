@@ -80,15 +80,28 @@
 
         public async Task UpdateCustomerAsync(Interfaces.Customer customer, CancellationToken cancellationToken)
         {
-            // I need a better way to update the customer
-            // Removing the existing one and adding in a 
-            // new version feels wasteful.
-            var existing = this.dbContext.Customers.Find(customer.CustomerId);
-            this.dbContext.Remove(existing);
-            await this.dbContext.SaveChangesAsync(cancellationToken);
+            var updateCustomer = this.mapper.Map<Customer>(customer);
 
-            var dbCustomer = this.mapper.Map<Customer>(customer);
-            this.dbContext.Customers.Add(dbCustomer);
+            var entity = this.dbContext.Customers.Include(x => x.Addresses).FirstOrDefault(x => x.CustomerId == customer.CustomerId);
+            this.dbContext.Entry(entity).CurrentValues.SetValues(updateCustomer);
+
+            foreach (var address in updateCustomer.Addresses)
+            {
+                var addressEntity = entity.Addresses.FirstOrDefault(x => x.AddressId == address.AddressId);
+                if (addressEntity == null)
+                {
+                    this.dbContext.Add(address);
+                }
+                else
+                {
+                    this.dbContext.Entry(addressEntity).CurrentValues.SetValues(address);
+                }
+            }
+
+            foreach (var address in entity.Addresses.Where(x => !updateCustomer.Addresses.Any(y => x.AddressId == y.AddressId)))
+            {
+                this.dbContext.Remove(address);
+            }
 
             await this.dbContext.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
         }
