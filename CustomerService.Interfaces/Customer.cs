@@ -48,7 +48,7 @@
                     return false;
                 }
 
-                if (!this.PrimaryAddress.IsValid ||
+                if ((!this.PrimaryAddress?.IsValid) ?? true ||
                     (this.SecondaryAddresses?.Any(x => !x.IsValid) ?? false))
                 {
                     return false;

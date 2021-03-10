@@ -22,8 +22,8 @@
                 CustomerService sut)
             {
                 dataStore
-                    .Setup(x => x.GetCustomerAsync(It.Is<CustomerGetOptions>(x => x.CustomerId == customer.CustomerId), tokenSource.Token))
-                    .ReturnsAsync((Interfaces.Customer)null);
+                    .Setup(x => x.CheckCustomerExistsAsync(It.IsAny<CustomerGetOptions>(), tokenSource.Token))
+                    .ReturnsAsync(false);
 
                 var result = await sut.AddCustomerAsync(customer, tokenSource.Token).ConfigureAwait(false);
 
@@ -40,8 +40,8 @@
                 CustomerService sut)
             {
                 dataStore
-                    .Setup(x => x.GetCustomerAsync(It.Is<CustomerGetOptions>(x => x.CustomerId == customer.CustomerId), tokenSource.Token))
-                    .ReturnsAsync((Interfaces.Customer)null);
+                    .Setup(x => x.CheckCustomerExistsAsync(It.IsAny<CustomerGetOptions>(), tokenSource.Token))
+                    .ReturnsAsync(false);
 
                 customer.SecondaryAddresses = null;
 
@@ -59,12 +59,31 @@
                 [Frozen] Mock<ICustomerDataStore> dataStore,
                 CustomerService sut)
             {
-                customer.PrimaryAddress = null;
-
                 dataStore
-                    .Setup(x => x.GetCustomerAsync(It.Is<CustomerGetOptions>(x => x.CustomerId == customer.CustomerId), tokenSource.Token))
-                    .ReturnsAsync((Interfaces.Customer)null);
+                    .Setup(x => x.CheckCustomerExistsAsync(It.IsAny<CustomerGetOptions>(), tokenSource.Token))
+                    .ReturnsAsync(false);
+
+                customer.PrimaryAddress = null;
  
+                var result = await sut.AddCustomerAsync(customer, tokenSource.Token).ConfigureAwait(false);
+
+                dataStore.Verify(x => x.AddCustomerAsync(customer, tokenSource.Token), Times.Never);
+                result.Should().BeFalse();
+            }
+
+
+            [Theory]
+            [AutoDomainData]
+            public async void ShouldNotAddCustomerWhenExists(
+               Interfaces.Customer customer,
+               CancellationTokenSource tokenSource,
+               [Frozen] Mock<ICustomerDataStore> dataStore,
+               CustomerService sut)
+            {
+                dataStore
+                    .Setup(x => x.CheckCustomerExistsAsync(It.IsAny<CustomerGetOptions>(), tokenSource.Token))
+                    .ReturnsAsync(true);
+
                 var result = await sut.AddCustomerAsync(customer, tokenSource.Token).ConfigureAwait(false);
 
                 dataStore.Verify(x => x.AddCustomerAsync(customer, tokenSource.Token), Times.Never);
@@ -156,6 +175,10 @@
                 [Frozen] Mock<ICustomerDataStore> dataStore,
                 CustomerService sut)
             {
+                dataStore
+                    .Setup(x => x.CheckCustomerExistsAsync(It.IsAny<CustomerGetOptions>(), tokenSource.Token))
+                    .ReturnsAsync(true);
+
                 var result = await sut.UpdateCustomerAsync(customer, tokenSource.Token).ConfigureAwait(false);
 
                 dataStore.Verify(x => x.UpdateCustomerAsync(customer, tokenSource.Token), Times.Once);
@@ -171,6 +194,10 @@
                 CustomerService sut)
             {
                 customer.PrimaryAddress = null;
+
+                dataStore
+                    .Setup(x => x.CheckCustomerExistsAsync(It.IsAny<CustomerGetOptions>(), tokenSource.Token))
+                    .ReturnsAsync(true);
 
                 var result = await sut.UpdateCustomerAsync(customer, tokenSource.Token).ConfigureAwait(false);
 
@@ -189,6 +216,10 @@
                 [Frozen] Mock<ICustomerDataStore> dataStore,
                 CustomerService sut)
             {
+                dataStore
+                    .Setup(x => x.CheckCustomerExistsAsync(It.IsAny<CustomerGetOptions>(), tokenSource.Token))
+                    .ReturnsAsync(true);
+
                 await sut.DeleteCustomerAsync(customerId, tokenSource.Token).ConfigureAwait(false);
 
                 dataStore.Verify(x => x.DeleteCustomerAsync(customerId, tokenSource.Token), Times.Once);
