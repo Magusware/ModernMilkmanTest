@@ -9,7 +9,7 @@
     {
         Task<IEnumerable<Interfaces.Customer>> GetCustomersAsync(bool includeInactive, CancellationToken cancellationToken);
 
-        Task<Interfaces.Customer> GetCustomerAsync(object customerId, CancellationToken token);
+        Task<Interfaces.Customer> GetCustomerAsync(CustomerGetOptions options, CancellationToken cancellationToken);
 
         Task AddCustomerAsync(Interfaces.Customer customer, CancellationToken cancellationToken);
 
@@ -17,10 +17,6 @@
 
         Task DeleteCustomerAsync(Guid customerId, CancellationToken cancellationToken);
 
-        Task AddAddressAsync(Interfaces.Address address, Guid customerId, CancellationToken cancellationToken);
-
-        Task UpdateAddressAsync(Interfaces.Address address, CancellationToken cancellationToken);
-
-        Task DeleteAddressAsync(Guid addressId, CancellationToken cancellationToken);
+        Task<bool> CheckCustomerExistsAsync(CustomerGetOptions options, CancellationToken cancellationToken);
     }
 }

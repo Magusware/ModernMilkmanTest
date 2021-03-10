@@ -1,6 +1,8 @@
 ﻿namespace WebAPI.Controllers
 {
     using System;
+    using System.Linq;
+    using System.Threading;
     using System.Threading.Tasks;
     using CustomerServiceNS.Interfaces;
     using Microsoft.AspNetCore.Mvc;
@@ -31,17 +33,16 @@
         /// Ok (200): customer found, includes customer object
         /// </returns>
         [HttpGet]
-        public async Task<IActionResult> GetAsync(Guid customerId)
+        public async Task<IActionResult> GetAsync(Guid customerId, CancellationToken cancellationToken)
         {
             if (customerId == Guid.Empty)
             {
                 return this.BadRequest();
             }
 
-            var customer = new Customer()
-            {
-                CustomerId = customerId
-            };
+            var customer = await this.customerService
+                .GetCustomerAsync(customerId, cancellationToken)
+                .ConfigureAwait(false);
 
             if (customer == null)
             {
@@ -56,26 +57,9 @@
         /// </summary>
         /// <returns></returns>
         [HttpGet("all")]
-        public async Task<IActionResult> GetAllAsync()
+        public async Task<IActionResult> GetAllAsync(CancellationToken cancellationToken)
         {
-            var customers = new[]
-            {
-                new Customer()
-                {
-                    CustomerId = Guid.NewGuid(),
-                    IsActive = true
-                },
-                new Customer()
-                {
-                    CustomerId = Guid.NewGuid(),
-                    IsActive = false
-                },
-                new Customer()
-                {
-                    CustomerId = Guid.NewGuid(),
-                    IsActive = false
-                }
-            };
+            var customers = await this.customerService.GetCustomersAsync(true, cancellationToken).ConfigureAwait(false);
 
             return this.Ok(customers);
         }
@@ -85,26 +69,9 @@
         /// </summary>
         /// <returns></returns>
         [HttpGet("active")]
-        public async Task<IActionResult> GetActiveAsync()
+        public async Task<IActionResult> GetActiveAsync(CancellationToken cancellationToken)
         {
-            var customers = new[]
-            {
-                new Customer()
-                {
-                    CustomerId = Guid.NewGuid(),
-                    IsActive = true
-                },
-                new Customer()
-                {
-                    CustomerId = Guid.NewGuid(),
-                    IsActive = true
-                },
-                new Customer()
-                {
-                    CustomerId = Guid.NewGuid(),
-                    IsActive = true
-                }
-            };
+            var customers = await this.customerService.GetCustomersAsync(false, cancellationToken).ConfigureAwait(false);
 
             return this.Ok(customers);
         }
@@ -119,20 +86,11 @@
         /// Ok (200): Customer created
         /// </returns>
         [HttpPut]
-        public async Task<IActionResult> PutAsync([FromBody]Customer customer)
+        public async Task<IActionResult> PutAsync([FromBody]Customer customer, CancellationToken cancellationToken)
         {
             if (!customer.IsValid)
             {
                 return this.BadRequest();
-            }
-
-            // check if customer already exists
-            // not sure how to determine this yet since addresses 
-            // can be changed and names are not unique, might
-            // be able to tie this to email address.
-            if (false)
-            {
-                return this.Conflict();
             }
 
             customer.CustomerId = Guid.NewGuid();
@@ -156,7 +114,10 @@
                 }
             }
 
-            // Write customer to customer service
+            if (!await this.customerService.AddCustomerAsync(customer, cancellationToken))
+            {
+                return this.Conflict();
+            }
 
             return this.Ok(customer);
         }
@@ -171,15 +132,14 @@
         /// Ok (200): customer deleted
         /// </returns>
         [HttpDelete]
-        public async Task<IActionResult> DeleteAsync(Guid customerId)
+        public async Task<IActionResult> DeleteAsync(Guid customerId, CancellationToken cancellationToken)
         {
             if (customerId == Guid.Empty)
             {
                 return this.BadRequest();
             }
 
-            // check if customer exists
-            if (false)
+            if (await this.customerService.DeleteCustomerAsync(customerId, cancellationToken).ConfigureAwait(false))
             {
                 return this.NotFound();
             }
@@ -211,15 +171,19 @@
             string postcode,
             string addressLine2, 
             string county,
-            string country)
+            string country,
+            CancellationToken cancellationToken)
         {
             if (customerId == Guid.Empty)
             {
                 return this.BadRequest();
             }
 
-            // check customer exists
-            if (false)
+            var customer = await this.customerService
+                .GetCustomerAsync(customerId, cancellationToken)
+                .ConfigureAwait(false);
+
+            if (customer == null)
             {
                 return this.NotFound();
             }
@@ -241,14 +205,20 @@
             }
     
             // check if address exists on customer
-            if (false)
+            if (customer.HasAddress(address))
             {
                 return this.Conflict();
             }
 
-            // add address to customer
+            customer.SecondaryAddresses = customer.SecondaryAddresses
+                .Append(address)
+                .ToArray();
 
-            return this.Ok(address);
+            await this.customerService
+                .UpdateCustomerAsync(customer, cancellationToken)
+                .ConfigureAwait(false);
+
+            return this.Ok(customer);
         }
 
         /// <summary>
@@ -263,28 +233,52 @@
         /// Ok (200): address deleted
         /// </returns>
         [HttpDelete("address")]
-        public async Task<IActionResult> DeleteAddressAsync(Guid customerId, Guid addressId)
+        public async Task<IActionResult> DeleteAddressAsync(Guid customerId, Guid addressId, CancellationToken cancellationToken)
         {
             if (customerId == Guid.Empty || addressId == Guid.Empty)
             {
                 return this.BadRequest();
             }
 
-            // Check if customer and address exist
-            if (false)
+            var customer = await this.customerService
+                .GetCustomerAsync(customerId, cancellationToken)
+                .ConfigureAwait(false);
+
+            if (customer == null)
             {
                 return this.NotFound();
             }
 
-            // Check if can delete
-            if (false)
+            if (customer.PrimaryAddress.AddressId == addressId)
             {
-                return this.Conflict();
+                if (customer.SecondaryAddresses?.Any() ?? false)
+                {
+                    customer.PrimaryAddress = customer.SecondaryAddresses.First();
+                    customer.SecondaryAddresses = customer.SecondaryAddresses
+                        .Skip(1)
+                        .ToArray();
+                }
+                else
+                {
+                    return this.Conflict();
+                }
+            }
+            else if (customer.SecondaryAddresses.Any(x => x.AddressId == addressId))
+            {
+                customer.SecondaryAddresses = customer.SecondaryAddresses
+                    .Where(x => x.AddressId != addressId)
+                    .ToArray();
+            }
+            else
+            {
+                return this.NotFound();
             }
 
-            // Do delete
+            await this.customerService
+                .UpdateCustomerAsync(customer, cancellationToken)
+                .ConfigureAwait(false);
 
-            return this.Ok();
+            return this.Ok(customer);
         }
 
         /// <summary>
@@ -298,7 +292,7 @@
         /// Ok (200): Successfully changed address
         /// </returns>
         [HttpPost("primary")]
-        public async Task<IActionResult> SetPrimaryAddressAsync(Guid customerId, Guid addressId)
+        public async Task<IActionResult> SetPrimaryAddressAsync(Guid customerId, Guid addressId, CancellationToken cancellationToken)
         {
             if (customerId == Guid.Empty || addressId == Guid.Empty)
             {
@@ -306,12 +300,29 @@
             }
 
             // check if customer and address exist
-            if (false)
+            var customer = await this.customerService
+                .GetCustomerAsync(customerId, cancellationToken)
+                .ConfigureAwait(false);
+
+            if (customer == null || 
+                !(customer.SecondaryAddresses?.Any(x => x.AddressId == addressId) ?? false))
             {
                 return this.NotFound();
             }
 
-            return this.Ok();
+            var newPrimary = customer.SecondaryAddresses.First(x => x.AddressId == addressId);
+            customer.SecondaryAddresses = customer.SecondaryAddresses
+                .Where(x => x.AddressId != addressId)
+                .Append(customer.PrimaryAddress)
+                .ToArray();
+
+            customer.PrimaryAddress = newPrimary;
+
+            await this.customerService
+                .UpdateCustomerAsync(customer, cancellationToken)
+                .ConfigureAwait(false);
+
+            return this.Ok(customer);
         }
 
         /// <summary>
@@ -325,22 +336,29 @@
         /// Ok (200): set customer active state
         /// </returns>
         [HttpPost("active")]
-        public async Task<IActionResult> SetActiveAsync(Guid customerId, bool active)
+        public async Task<IActionResult> SetActiveAsync(Guid customerId, bool active, CancellationToken cancellationToken)
         {
             if (customerId == Guid.Empty)
             {
                 return this.BadRequest();
             }
 
-            // check if customer exists
-            if (false)
+            var customer = await this.customerService
+                .GetCustomerAsync(customerId, cancellationToken)
+                .ConfigureAwait(false);
+
+            if (customer == null)
             {
                 return this.NotFound();
             }
 
-            // Set customer active state
+            customer.IsActive = active;
 
-            return this.Ok();
+            await this.customerService
+                .UpdateCustomerAsync(customer, cancellationToken)
+                .ConfigureAwait(false);
+
+            return this.Ok(customer);
         }
     }
 }

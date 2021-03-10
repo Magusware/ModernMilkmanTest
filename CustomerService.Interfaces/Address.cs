@@ -43,5 +43,10 @@
                 return true;
             }
         }
+    
+        public bool IsAddress(Address address) =>
+            this.AddressLine1 == address.AddressLine1 &&
+            this.Town == address.Town &&
+            this.Postcode == address.Postcode;
     }
 }

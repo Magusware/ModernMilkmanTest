@@ -22,7 +22,7 @@
                 CustomerService sut)
             {
                 dataStore
-                    .Setup(x => x.GetCustomerAsync(customer.CustomerId, tokenSource.Token))
+                    .Setup(x => x.GetCustomerAsync(It.Is<CustomerGetOptions>(x => x.CustomerId == customer.CustomerId), tokenSource.Token))
                     .ReturnsAsync((Interfaces.Customer)null);
 
                 var result = await sut.AddCustomerAsync(customer, tokenSource.Token).ConfigureAwait(false);
@@ -40,7 +40,7 @@
                 CustomerService sut)
             {
                 dataStore
-                    .Setup(x => x.GetCustomerAsync(customer.CustomerId, tokenSource.Token))
+                    .Setup(x => x.GetCustomerAsync(It.Is<CustomerGetOptions>(x => x.CustomerId == customer.CustomerId), tokenSource.Token))
                     .ReturnsAsync((Interfaces.Customer)null);
 
                 customer.SecondaryAddresses = null;
@@ -62,7 +62,7 @@
                 customer.PrimaryAddress = null;
 
                 dataStore
-                    .Setup(x => x.GetCustomerAsync(customer.CustomerId, tokenSource.Token))
+                    .Setup(x => x.GetCustomerAsync(It.Is<CustomerGetOptions>(x => x.CustomerId == customer.CustomerId), tokenSource.Token))
                     .ReturnsAsync((Interfaces.Customer)null);
  
                 var result = await sut.AddCustomerAsync(customer, tokenSource.Token).ConfigureAwait(false);
@@ -83,7 +83,7 @@
                 CustomerService sut)
             {
                 dataStore
-                    .Setup(x => x.GetCustomerAsync(customer.CustomerId, tokenSource.Token))
+                    .Setup(x => x.GetCustomerAsync(It.Is<CustomerGetOptions>(x => x.CustomerId == customer.CustomerId), tokenSource.Token))
                     .ReturnsAsync(customer);
 
                 var result = await sut.GetCustomerAsync(customer.CustomerId, tokenSource.Token).ConfigureAwait(false);
@@ -100,7 +100,7 @@
                CustomerService sut)
             {
                 dataStore
-                    .Setup(x => x.GetCustomerAsync(randomId, tokenSource.Token))
+                    .Setup(x => x.GetCustomerAsync(It.Is<CustomerGetOptions>(x => x.CustomerId == randomId), tokenSource.Token))
                     .ReturnsAsync((Interfaces.Customer)null);
 
                 var result = await sut.GetCustomerAsync(randomId, tokenSource.Token).ConfigureAwait(false);

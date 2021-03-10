@@ -19,9 +19,16 @@
         {
             try
             {
-                if (!await this.CustomerExists(customer.CustomerId, cancellationToken).ConfigureAwait(false))
+                var customerGetOptions = new Database.CustomerGetOptions()
                 {
-                    if (!ValidateCustomerAddresses(customer))
+                    EmailAddress = customer.EmailAddress
+                };
+
+                if (!await this.dataStore.CheckCustomerExistsAsync(customerGetOptions, cancellationToken).ConfigureAwait(false))
+                {
+                    // Check here in case different entry points
+                    // are used at a later date.
+                    if (!customer.IsValid)
                     {
                         // Maybe return something better than
                         // bool in future to indicate the fault.
@@ -48,7 +55,12 @@
         {
             try
             {
-                return await dataStore.GetCustomerAsync(customerId, cancellationToken).ConfigureAwait(false);
+                var customerGetOptions = new Database.CustomerGetOptions() 
+                { 
+                    CustomerId = customerId 
+                }; 
+
+                return await dataStore.GetCustomerAsync(customerGetOptions, cancellationToken).ConfigureAwait(false);
             }
             catch (Exception)
             {
@@ -61,7 +73,12 @@
         {
             try
             {
-                if (await this.CustomerExists(customerId, cancellationToken).ConfigureAwait(false))
+                var customerGetOptions = new Database.CustomerGetOptions()
+                {
+                    CustomerId = customerId
+                };
+
+                if (await this.dataStore.CheckCustomerExistsAsync(customerGetOptions, cancellationToken).ConfigureAwait(false))
                 {
                     await this.dataStore.DeleteCustomerAsync(customerId, cancellationToken).ConfigureAwait(false);
                 }
@@ -96,9 +113,16 @@
         {
             try
             {
-                if (await this.CustomerExists(customer.CustomerId, cancellationToken).ConfigureAwait(false))
+                var customerGetOptions = new Database.CustomerGetOptions()
                 {
-                    if (!ValidateCustomerAddresses(customer))
+                    CustomerId = customer.CustomerId
+                };
+
+                if (await this.dataStore.CheckCustomerExistsAsync(customerGetOptions, cancellationToken).ConfigureAwait(false))
+                {
+                    // Check here if the customer is valid as
+                    // there may be other entry points later.
+                    if (!customer.IsValid)
                     {
                         return false;
                     }
@@ -117,31 +141,6 @@
             }
 
             return true;
-        }
-
-        private static bool ValidateCustomerAddresses(Customer customer)
-        {
-            if (customer.PrimaryAddress == null)
-            {
-                return false;
-            }
-
-            return true;
-        }
-
-        private async Task<bool> CustomerExists(Guid customerId, CancellationToken cancellationToken)
-        {
-            try
-            {
-                // This logic can be swapped out with something more efficient
-                // like a cache of customers or a better Db lookup.
-                var customer = await this.dataStore.GetCustomerAsync(customerId, cancellationToken).ConfigureAwait(false);
-                return customer != null;
-            }
-            catch (Exception ex)
-            {
-                throw new Exception("Failed to check if customer exists", ex);
-            }
         }
     }
 }

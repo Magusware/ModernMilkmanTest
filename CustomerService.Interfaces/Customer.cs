@@ -57,5 +57,9 @@
                 return true;
             }
         }
+
+        public bool HasAddress(Address address) =>
+            this.PrimaryAddress.IsAddress(address) ||
+            this.SecondaryAddresses.Any(x => x.IsAddress(address));
     }
 }
