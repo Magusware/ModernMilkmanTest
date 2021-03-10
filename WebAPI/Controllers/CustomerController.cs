@@ -139,7 +139,7 @@
                 return this.BadRequest();
             }
 
-            if (await this.customerService.DeleteCustomerAsync(customerId, cancellationToken).ConfigureAwait(false))
+            if (!await this.customerService.DeleteCustomerAsync(customerId, cancellationToken).ConfigureAwait(false))
             {
                 return this.NotFound();
             }
